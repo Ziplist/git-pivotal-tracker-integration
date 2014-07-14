@@ -38,6 +38,10 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
 require 'pry'
     binding.pry
     abort("Create the PR now?")
+
+    GitPivotalTrackerIntegration::Util::Shell.exec "git checkout #{config.base_branch}"
+    GitPivotalTrackerIntegration::Util::Shell.exec "git pull #{config.base_remote} #{config.base_branch}"
+
   end
 
 end
