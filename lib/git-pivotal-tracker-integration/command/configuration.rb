@@ -17,6 +17,7 @@ require 'git-pivotal-tracker-integration/command/command'
 require 'git-pivotal-tracker-integration/util/git'
 require 'highline/import'
 require 'pivotal-tracker'
+require "github_api"
 
 # A class that exposes configuration that commands can use
 class GitPivotalTrackerIntegration::Command::Configuration
@@ -59,7 +60,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
       GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_OAUTH_TOKEN, token, :global)
     end
 
-    Github.new(:oauth_token => token)
+    ::Github.new(:oauth_token => token)
   end
 
   # Returns the user's Pivotal Tracker API token.  If this token has not been
