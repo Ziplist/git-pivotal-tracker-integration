@@ -34,7 +34,7 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
     GitPivotalTrackerIntegration::Util::Git.update_from_master
     GitPivotalTrackerIntegration::Util::Git.push GitPivotalTrackerIntegration::Util::Git.branch_name
 
-    github = GitPivotalTrackerIntegration::Command::Configuration.github
+    github = config.github
 require 'pry'
     binding.pry
     abort("Create the PR now?")
