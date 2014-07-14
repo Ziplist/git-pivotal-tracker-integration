@@ -21,6 +21,47 @@ require 'pivotal-tracker'
 # A class that exposes configuration that commands can use
 class GitPivotalTrackerIntegration::Command::Configuration
 
+  def base_remote
+    branch = GitPivotalTrackerIntegration::Util::Git.get_config "main_remote"
+
+    if (branch.empty?)
+      branch = ask("What remote should I pull from to start a new branch? ")
+      GitPivotalTrackerIntegration::Util::Git.set_config("main_remote", branch, :global)
+    end
+    branch
+  end
+
+  def base_branch
+    branch = GitPivotalTrackerIntegration::Util::Git.get_config "main_branch"
+
+    if (branch.empty?)
+      branch = ask("What branch should I base the new branches off of? ")
+      GitPivotalTrackerIntegration::Util::Git.set_config("main_branch", branch, :global)
+    end
+    branch
+  end
+
+  def personal_remote
+    remote = GitPivotalTrackerIntegration::Util::Git.get_config "personal_remote"
+
+    if (branch.empty?)
+      remote = ask("What remote should I push your topic branches to? ")
+      GitPivotalTrackerIntegration::Util::Git.set_config("personal_remote", remote, :global)
+    end
+    remote
+  end
+
+  def github
+    token = GitPivotalTrackerIntegration::Util::Git.get_config GITHUB_API_OAUTH_TOKEN
+
+    if (token.empty?)
+      token = ask("Github OAuth Token (help.github.com/articles/creating-an-access-token-for-command-line-use): ").strip
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_OAUTH_TOKEN, token, :global)
+    end
+
+    Github.new(:oauth_token => token)
+  end
+
   # Returns the user's Pivotal Tracker API token.  If this token has not been
   # configured, prompts the user for the value.  The value is checked for in
   # the _inherited_ Git configuration, but is stored in the _global_ Git
@@ -88,5 +129,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
   KEY_PROJECT_ID = 'pivotal.project-id'.freeze
 
   KEY_STORY_ID = 'pivotal-story-id'.freeze
+
+  GITHUB_API_OAUTH_TOKEN = 'github.oauth'.freeze
 
 end

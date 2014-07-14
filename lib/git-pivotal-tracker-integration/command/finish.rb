@@ -29,11 +29,12 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
   # @return [void]
   def run(argument)
     no_complete = argument =~ /--no-complete/
-    binding.pry
-    GitPivotalTrackerIntegration::Util::Git.trivial_merge?
     GitPivotalTrackerIntegration::Util::Git.update_from_master
     GitPivotalTrackerIntegration::Util::Git.push GitPivotalTrackerIntegration::Util::Git.branch_name
 
+    github = GitPivotalTrackerIntegration::Command::Configuration.github
+
+    binding.pry
     abort("Create the PR now?")
   end
 

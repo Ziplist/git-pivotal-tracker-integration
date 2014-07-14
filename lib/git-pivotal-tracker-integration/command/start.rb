@@ -39,6 +39,9 @@ class GitPivotalTrackerIntegration::Command::Start < GitPivotalTrackerIntegratio
     GitPivotalTrackerIntegration::Util::Story.pretty_print story
 
     development_branch_name = development_branch_name story
+
+    # Checkout {remote} / {master}
+
     GitPivotalTrackerIntegration::Util::Git.create_branch development_branch_name
     @configuration.story = story
 

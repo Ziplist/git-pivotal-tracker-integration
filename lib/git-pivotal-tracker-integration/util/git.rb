@@ -51,28 +51,29 @@ class GitPivotalTrackerIntegration::Util::Git
     GitPivotalTrackerIntegration::Util::Shell.exec('git branch').scan(/\* (.*)/)[0][0]
   end
 
-  # Creates a branch with a given +name+.  First pulls the current branch to
-  # ensure that it is up to date and then creates and checks out the new
-  # branch.  If specified, sets branch-specific properties that are passed in.
+  # Creates a branch with a given +name+ based off the main remote / branch.
+  #
+  # Fetches the remote.
+  # checks out the remote
+  # creates a new branch off of that.
   #
   # @param [String] name the name of the branch to create
   # @param [Boolean] print_messages whether to print messages
   # @return [void]
   def self.create_branch(name, print_messages = true)
-    root_branch = branch_name
-    root_remote = get_config KEY_REMOTE, :branch
+    base_remote = GitPivotalTrackerIntegration::Command::Configuration.base_remote
+    base_branch = GitPivotalTrackerIntegration::Command::Configuration.base_branch
+    personal_remote = GitPivotalTrackerIntegration::Command::Configuration.personal_remote
 
-    if print_messages; print "Pulling #{root_branch}... " end
-    GitPivotalTrackerIntegration::Util::Shell.exec 'git pull --quiet --ff-only'
-    if print_messages; puts 'OK'
-    end
+    self.exec "git fetch #{base_remote}"
+    self.exec "git checkout #{base_remote}/#{base_branch}"
 
-    if print_messages; print "Creating and checking out #{name}... " end
-    GitPivotalTrackerIntegration::Util::Shell.exec "git checkout --quiet -b #{name}"
-    set_config KEY_ROOT_BRANCH, root_branch, :branch
-    set_config KEY_ROOT_REMOTE, root_remote, :branch
-    if print_messages; puts 'OK'
-    end
+    self.exec "git checkout -b #{name}"
+
+
+    set_config KEY_ROOT_BRANCH, base_branch, :branch
+    set_config KEY_ROOT_REMOTE, base_remote, :branch
+    set_config KEY_PERSONAL_REMOTE, personal_remote, :branch
   end
 
   # Creates a commit with a given message.  The commit includes all change
@@ -85,28 +86,6 @@ class GitPivotalTrackerIntegration::Util::Git
   # @return [void]
   def self.create_commit(message, story)
     GitPivotalTrackerIntegration::Util::Shell.exec "git commit --quiet --all --allow-empty --message \"#{message}\n\n[##{story.id}]\""
-  end
-
-  # Creates a tag with the given name.  Before creating the tag, commits all
-  # outstanding changes with a commit message that reflects that these changes
-  # are for a release.
-  #
-  # @param [String] name the name of the tag to create
-  # @param [PivotalTracker::Story] story the story associated with the current
-  #   tag
-  # @return [void]
-  def self.create_release_tag(name, story)
-    root_branch = branch_name
-
-    print "Creating tag v#{name}... "
-
-    create_branch RELEASE_BRANCH_NAME, false
-    create_commit "#{name} Release", story
-    GitPivotalTrackerIntegration::Util::Shell.exec "git tag v#{name}"
-    GitPivotalTrackerIntegration::Util::Shell.exec "git checkout --quiet #{root_branch}"
-    GitPivotalTrackerIntegration::Util::Shell.exec "git branch --quiet -D #{RELEASE_BRANCH_NAME}"
-
-    puts 'OK'
   end
 
   # Returns a Git configuration value.  This value is read using the +git
@@ -130,13 +109,12 @@ class GitPivotalTrackerIntegration::Util::Git
   end
 
   def self.update_from_master
-    development_branch = branch_name
-    root_branch = get_config KEY_ROOT_BRANCH, :branch
+    branch = get_config KEY_ROOT_BRANCH, base_branch, :branch
+    remote = get_config KEY_ROOT_REMOTE, base_remote, :branch
 
-    print "Merging #{root_branch} to #{development_branch}..."
+    print "Merging #{remote}/#{branch} in..."
 
-    GitPivotalTrackerIntegration::Util::Shell.exec "git fetch"
-    GitPivotalTrackerIntegration::Util::Shell.exec "git merge --quiet --no-ff -m \"merging #{root_branch} in before push\" --quiet"
+    GitPivotalTrackerIntegration::Util::Shell.exec "git pull #{remote} #{branch}"
     puts 'OK'
   end
 
@@ -145,7 +123,7 @@ class GitPivotalTrackerIntegration::Util::Git
   # @param [String] refs the explicit references to push
   # @return [void]
   def self.push(*refs)
-    remote = get_config KEY_REMOTE, :branch
+    remote = get_config KEY_PERSONAL_REMOTE, :branch
 
     print "Pushing to #{remote}... "
     GitPivotalTrackerIntegration::Util::Shell.exec "git push --quiet #{remote} " + refs.join(' ')
@@ -195,41 +173,16 @@ class GitPivotalTrackerIntegration::Util::Git
     end
   end
 
-  # Checks whether merging the current branch back to its root branch would be
-  # a trivial merge.  A trivial merge is defined as one where the net change
-  # of the merge would be the same as the net change of the branch being
-  # merged.  The easiest way to ensure that a merge is trivial is to rebase a
-  # development branch onto the tip of its root branch.
-  #
-  # @return [void]
-  def self.trivial_merge?
-    development_branch = branch_name
-    root_branch = get_config KEY_ROOT_BRANCH, :branch
-
-    print "Checking for trivial merge from #{development_branch} to #{root_branch}... "
-
-    GitPivotalTrackerIntegration::Util::Shell.exec "git checkout --quiet #{root_branch}"
-    GitPivotalTrackerIntegration::Util::Shell.exec 'git pull --quiet --ff-only'
-    GitPivotalTrackerIntegration::Util::Shell.exec "git checkout --quiet #{development_branch}"
-
-    root_tip = GitPivotalTrackerIntegration::Util::Shell.exec "git rev-parse #{root_branch}"
-    common_ancestor = GitPivotalTrackerIntegration::Util::Shell.exec "git merge-base #{root_branch} #{development_branch}"
-
-    if root_tip != common_ancestor
-      abort 'FAIL'
-    end
-
-    puts 'OK'
-  end
-
   private
 
-  KEY_REMOTE = 'remote'.freeze
+  def self.exec(cmd)
+    GitPivotalTrackerIntegration::Util::Shell.exec cmd
+  end
 
   KEY_ROOT_BRANCH = 'root-branch'.freeze
 
   KEY_ROOT_REMOTE = 'root-remote'.freeze
 
-  RELEASE_BRANCH_NAME = 'pivotal-tracker-release'.freeze
+  KEY_PERSONAL_REMOTE = 'personal-remote'.freeze
 
 end
