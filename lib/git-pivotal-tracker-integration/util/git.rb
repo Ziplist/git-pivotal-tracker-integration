@@ -60,11 +60,7 @@ class GitPivotalTrackerIntegration::Util::Git
   # @param [String] name the name of the branch to create
   # @param [Boolean] print_messages whether to print messages
   # @return [void]
-  def self.create_branch(name, print_messages = true)
-    base_remote = GitPivotalTrackerIntegration::Command::Configuration.base_remote
-    base_branch = GitPivotalTrackerIntegration::Command::Configuration.base_branch
-    personal_remote = GitPivotalTrackerIntegration::Command::Configuration.personal_remote
-
+  def self.create_branch(base_remote, base_branch, personal_remote, name)
     self.exec "git fetch #{base_remote}"
     self.exec "git checkout #{base_remote}/#{base_branch}"
 

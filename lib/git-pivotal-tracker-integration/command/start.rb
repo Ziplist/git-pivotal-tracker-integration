@@ -42,7 +42,8 @@ class GitPivotalTrackerIntegration::Command::Start < GitPivotalTrackerIntegratio
 
     # Checkout {remote} / {master}
 
-    GitPivotalTrackerIntegration::Util::Git.create_branch development_branch_name
+    config = GitPivotalTrackerIntegration::Util::Command::Configuration.new
+    GitPivotalTrackerIntegration::Util::Git.create_branch config.base_remote, config.base_branch, config.personal_remote, development_branch_name
     @configuration.story = story
 
     GitPivotalTrackerIntegration::Util::Git.add_hook 'prepare-commit-msg', File.join(File.dirname(__FILE__), 'prepare-commit-msg.sh')
