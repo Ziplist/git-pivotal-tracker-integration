@@ -15,7 +15,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'git-pivotal-tracker-integration'
-  s.version     = '1.5.13'
+  s.version     = '1.5.14'
   s.summary     = 'Git commands for integration with Pivotal Tracker'
   s.description = 'Provides a set of additional Git commands to help developers when working with Pivotal Tracker'
   s.authors     = ['Ben Hale', "Cary FitzHugh"]
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'highline', '~> 1.6'
   s.add_dependency 'pivotal-tracker', '~> 0.5'
+  s.add_dependency 'github_api'
 
   s.add_development_dependency 'bundler', '~> 1.3'
   s.add_development_dependency 'rake', '~> 10.0'
