@@ -15,10 +15,10 @@
 
 Gem::Specification.new do |s|
   s.name        = 'git-pivotal-tracker-integration'
-  s.version     = '1.5.0.dev'
+  s.version     = '1.5.1'
   s.summary     = 'Git commands for integration with Pivotal Tracker'
   s.description = 'Provides a set of additional Git commands to help developers when working with Pivotal Tracker'
-  s.authors     = ['Ben Hale']
+  s.authors     = ['Ben Hale', "Cary FitzHugh"]
   s.email       = 'nebhale@nebhale.com'
   s.homepage    = 'https://github.com/nebhale/git-pivotal-tracker-integration'
   s.license     = 'Apache-2.0'

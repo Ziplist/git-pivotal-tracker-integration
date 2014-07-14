@@ -26,7 +26,7 @@ $ git start       # Creates branch and starts story
 $ git commit ...
 $ git commit ...  # Your existing development process
 $ git commit ...
-$ git finish      # Merges and destroys branch, pushes to origin, and finishes story
+$ git finish      # Pushes branch, finishes pivotal story, creates PR.
 ```
 
 
@@ -111,68 +111,7 @@ If it doesn't exist already, a `prepare-commit-msg` commit hook is added to your
 #
 ```
 
-### `git finish [--no-complete]`
-This command finishes a story by merging and cleaning up its branch and then pushing the changes to a remote server.  This command can be run in two ways.  First it can be run without the `--no-complete` option.
-
-```plain
-$ git finish
-Checking for trivial merge from 12345678-lorem-ipsum to master... OK
-Merging 12345678-lorem-ipsum to master... OK
-Deleting 12345678-lorem-ipsum... OK
-Pushing to origin... OK
-```
-
-The command checks that it will be able to do a trivial merge from the development branch to the target branch before it does anything.  The check has the following constraints
-
-1.  The local repository must be up to date with the remote repository (e.g. `origin`)
-2.  The local merge target branch (e.g. `master`) must be up to date with the remote merge target branch (e.g. `origin/master`)
-3.  The common ancestor (i.e. the branch point) of the development branch (e.g. `12345678-lorem-ipsum`) must be tip of the local merge target branch (e.g. `master`)
-
-If all of these conditions are met, the development branch will be merged into the target branch with a message of:
-
-```plain
-Merge 12345678-lorem-ipsum to master
-
-[Completes #12345678]
-```
-
-The second way is with the `--no-complete` option specified. In this case `finish` performs the same actions except the `Completes`... statement in the commit message will be supressed.
-
-```plain
-Merge 12345678-lorem-ipsum to master
-
-[#12345678]
-```
-
-After merging, the development branch is deleted and the changes are pushed to the remote repository.
-
-### `git release [story-id]`
-This command creates a release for a story.  It does this by updating the version string in the project and creating a tag.  This command can be run in two ways.  First it can be run specifying the release that you want to create.
-
-```plain
-$ git release 12345678
-```
-The other way the command can be run without specifying anything.  In this case, it will select the first release story (based on the backlog's order).
-
-```plain
-$ git release
-      Title: Lorem ipsum dolor sit amet, consectetur adipiscing elitattributes
-```
-
-Once a story has been selected by one of the two methods, the command then prompts for the release version and next development version.
-
-```plain
-$ git release
-      Title: Lorem ipsum dolor sit amet, consectetur adipiscing elitattributes
-
-Enter release version (current: 1.0.0.BUILD-SNAPSHOT): 1.0.0.M1
-Enter next development version (current: 1.0.0.BUILD-SNAPSHOT): 1.1.0.BUILD-SNAPSHOT
-Creating tag v1.0.0.M1... OK
-Pushing to origin... OK
-```
-
-Once these have been entered, the version string for the current project is updated to the release version and a tag is created.  Then the version string for the current project is updated to the next development version and a new commit along the original branch is created.  Finally the tag and changes are pushed to the remote sever.
-
-Version update is currently supported for the following kinds of projects.  If you do not see a project type that you would like supported, please open an issue or submit a pull request.
-
-* Gradle
+### `git finish`
+This command finishes a story pushing it up to origin.
+Then it sets up a PR to ziplist/ziplist.
+And finishes the Pivotal tracker issue.

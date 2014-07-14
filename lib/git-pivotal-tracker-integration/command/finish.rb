@@ -21,7 +21,7 @@ require 'git-pivotal-tracker-integration/util/git'
 class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegration::Command::Base
 
   # Finishes a Pivotal Tracker story by doing the following steps:
-  # * Check that the pending merge will be trivial
+  # * CHeck tha
   # * Merge the development branch into the root branch
   # * Delete the development branch
   # * Push changes to remote
@@ -29,9 +29,9 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
   # @return [void]
   def run(argument)
     no_complete = argument =~ /--no-complete/
-
+    binding.pry
     GitPivotalTrackerIntegration::Util::Git.trivial_merge?
-    GitPivotalTrackerIntegration::Util::Git.merge(@configuration.story(@project), no_complete)
+    GitPivotalTrackerIntegration::Util::Git.update_from_master
     GitPivotalTrackerIntegration::Util::Git.push GitPivotalTrackerIntegration::Util::Git.branch_name
   end
 
