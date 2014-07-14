@@ -33,6 +33,8 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
     GitPivotalTrackerIntegration::Util::Git.trivial_merge?
     GitPivotalTrackerIntegration::Util::Git.update_from_master
     GitPivotalTrackerIntegration::Util::Git.push GitPivotalTrackerIntegration::Util::Git.branch_name
+
+    abort("Create the PR now?")
   end
 
 end
