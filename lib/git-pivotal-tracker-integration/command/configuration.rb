@@ -22,31 +22,31 @@ require 'pivotal-tracker'
 class GitPivotalTrackerIntegration::Command::Configuration
 
   def base_remote
-    branch = GitPivotalTrackerIntegration::Util::Git.get_config "pivotal.main_remote"
+    branch = GitPivotalTrackerIntegration::Util::Git.get_config "pivotal.main-remote"
 
     if (branch.empty?)
       branch = ask("What remote should I pull from to start a new branch? ")
-      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.main_remote", branch, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.main-remote", branch, :global)
     end
     branch
   end
 
   def base_branch
-    branch = GitPivotalTrackerIntegration::Util::Git.get_config "pivotal.main_branch"
+    branch = GitPivotalTrackerIntegration::Util::Git.get_config "pivotal.main-branch"
 
     if (branch.empty?)
       branch = ask("What branch should I base the new branches off of? ")
-      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.main_branch", branch, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.main-branch", branch, :global)
     end
     branch
   end
 
   def personal_remote
-    remote = GitPivotalTrackerIntegration::Util::Git.get_config "pivotal.personal_remote"
+    remote = GitPivotalTrackerIntegration::Util::Git.get_config "pivotal.personal-remote"
 
     if (branch.empty?)
       remote = ask("What remote should I push your topic branches to? ")
-      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.personal_remote", remote, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.personal-remote", remote, :global)
     end
     remote
   end
