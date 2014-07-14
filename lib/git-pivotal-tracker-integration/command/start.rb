@@ -42,6 +42,9 @@ class GitPivotalTrackerIntegration::Command::Start < GitPivotalTrackerIntegratio
 
     # Checkout {remote} / {master}
 
+
+require 'pry'
+binding.pry
     config = GitPivotalTrackerIntegration::Util::Command::Configuration.new
     GitPivotalTrackerIntegration::Util::Git.create_branch config.base_remote, config.base_branch, config.personal_remote, development_branch_name
     @configuration.story = story

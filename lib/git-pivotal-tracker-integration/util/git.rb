@@ -105,8 +105,8 @@ class GitPivotalTrackerIntegration::Util::Git
   end
 
   def self.update_from_master
-    branch = get_config KEY_ROOT_BRANCH, base_branch, :branch
-    remote = get_config KEY_ROOT_REMOTE, base_remote, :branch
+    branch = get_config KEY_ROOT_BRANCH, :branch
+    remote = get_config KEY_ROOT_REMOTE, :branch
 
     print "Merging #{remote}/#{branch} in..."
 
@@ -119,7 +119,7 @@ class GitPivotalTrackerIntegration::Util::Git
   # @param [String] refs the explicit references to push
   # @return [void]
   def self.push(*refs)
-    remote = get_config KEY_PERSONAL_REMOTE, :branch
+    remote = get_config(KEY_PERSONAL_REMOTE, :branch) || "origin"
 
     print "Pushing to #{remote}... "
     GitPivotalTrackerIntegration::Util::Shell.exec "git push --quiet #{remote} " + refs.join(' ')
