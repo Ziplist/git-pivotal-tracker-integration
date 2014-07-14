@@ -44,7 +44,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
   def personal_remote
     remote = GitPivotalTrackerIntegration::Util::Git.get_config "personal_remote"
 
-    if (branch.empty?)
+    if (remote.empty?)
       remote = ask("What remote should I push your topic branches to? ")
       GitPivotalTrackerIntegration::Util::Git.set_config("personal_remote", remote, :global)
     end
