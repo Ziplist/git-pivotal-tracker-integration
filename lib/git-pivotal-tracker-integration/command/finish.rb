@@ -36,10 +36,11 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
 
     github = config.github
 
-    pr = github.pull_requests.create
+    pr = github.pull_requests.create(
       base: "master",
       head: "#{config.github_username}:#{branch_name}",
       title: "Fixing #{branch_name}"
+    )
 
     GitPivotalTrackerIntegration::Util::Shell.exec "git checkout #{config.base_branch}"
     GitPivotalTrackerIntegration::Util::Shell.exec "git pull #{config.base_remote} #{config.base_branch}"
