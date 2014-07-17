@@ -63,6 +63,11 @@ class GitPivotalTrackerIntegration::Util::Story
     story
   end
 
+  def self.add_note(project, story_id)
+    story = project.stories.find story_id.to_i
+    story.notes.create(:text => ask("Note: "))
+  end
+
   private
 
   CANDIDATE_STATES = %w(rejected unstarted unscheduled).freeze
