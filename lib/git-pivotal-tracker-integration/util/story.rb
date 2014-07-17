@@ -63,9 +63,9 @@ class GitPivotalTrackerIntegration::Util::Story
     story
   end
 
-  def self.add_note(project, story_id)
+  def self.add_note(project, story_id, note = nil)
     story = project.stories.find story_id.to_i
-    story.notes.create(:text => ask("Note: "))
+    story.notes.create(:text => (note ? note : ask("Note: ")))
     story
   end
 

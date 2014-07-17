@@ -42,7 +42,6 @@ class GitPivotalTrackerIntegration::Command::Start < GitPivotalTrackerIntegratio
 
     # Checkout {remote} / {master}
 
-
     config = GitPivotalTrackerIntegration::Command::Configuration.new
     GitPivotalTrackerIntegration::Util::Git.create_branch config.base_remote, config.base_branch, config.personal_remote, development_branch_name
     @configuration.story = story

@@ -30,19 +30,34 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
   def run(argument)
     no_complete = argument =~ /--no-complete/
     config = GitPivotalTrackerIntegration::Command::Configuration.new
-
+    branch_name = GitPivotalTrackerIntegration::Util::Git.branch_name
     GitPivotalTrackerIntegration::Util::Git.update_from_master
-    GitPivotalTrackerIntegration::Util::Git.push GitPivotalTrackerIntegration::Util::Git.branch_name
+    GitPivotalTrackerIntegration::Util::Git.push branch_name
 
     github = config.github
 
-require 'pry'
-    binding.pry
-    abort("Create the PR now?")
+    pr = github.pull_requests.create
+      base: "master",
+      head: "#{config.github_username}:#{branch_name}",
+      title: "Fixing #{branch_name}"
 
     GitPivotalTrackerIntegration::Util::Shell.exec "git checkout #{config.base_branch}"
     GitPivotalTrackerIntegration::Util::Shell.exec "git pull #{config.base_remote} #{config.base_branch}"
-
+    finish_on_tracker
   end
 
+  private
+
+  def finish_on_tracker
+    branch_name = GitPivotalTrackerIntegration::Util::Git.branch_name
+    piv_story = branch_name.match(/([\d]+)\-/)[1]
+    story = GitPivotalTrackerIntegration::Util::Story.add_note @project, piv_story, "Completed and pushed to GitHub"
+
+    print 'Finishing story on Pivotal Tracker... '
+    story.update(
+      :current_state => 'finished',
+      :owned_by => GitPivotalTrackerIntegration::Util::Git.get_config('user.name')
+    )
+    puts 'OK'
+  end
 end

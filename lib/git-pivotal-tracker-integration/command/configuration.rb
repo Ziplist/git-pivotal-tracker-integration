@@ -70,10 +70,25 @@ class GitPivotalTrackerIntegration::Command::Configuration
     if (repo.empty?)
       repo = ask("Github repo? (should be ziplist): ").strip
       GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_REPO_TOKEN, repo, :global)
-
     end
 
-    ::Github.new(:oauth_token => token, :org => organization, :repo => repo)
+    user = GitPivotalTrackerIntegration::Util::Git.get_config GITHUB_API_USER_TOKEN
+    if (user.empty?)
+      user = ask("Github user? (should be ziplist): ").strip
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_USER_TOKEN, user, :global)
+    end
+
+    ::Github.new(:oauth_token => token, :org => organization, :repo => repo, :user => user)
+  end
+
+  def github_username
+    uname = GitPivotalTrackerIntegration::Util::Git.get_config GITHUB_API_USERNAME_TOKEN
+
+    if (uname.empty?)
+      uname = ask("Your Github username (same remote as origin): ").strip
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_USERNAME_TOKEN, uname, :global)
+    end
+    uname
   end
 
   # Returns the user's Pivotal Tracker API token.  If this token has not been
@@ -147,5 +162,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
   GITHUB_API_OAUTH_TOKEN = 'github.oauth'.freeze
   GITHUB_API_REPO_TOKEN = 'github.repo'.freeze
   GITHUB_API_ORG_TOKEN = 'github.org'.freeze
+  GITHUB_API_USER_TOKEN = 'github.user'.freeze
+  GITHUB_API_USERNAME_TOKEN = 'github.username'.freeze
 
 end
