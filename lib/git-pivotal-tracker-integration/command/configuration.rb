@@ -60,7 +60,20 @@ class GitPivotalTrackerIntegration::Command::Configuration
       GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_OAUTH_TOKEN, token, :global)
     end
 
-    ::Github.new(:oauth_token => token)
+    organization = GitPivotalTrackerIntegration::Util::Git.get_config GITHUB_API_ORG_TOKEN
+    if (organization.empty?)
+      organization = ask("Github organization? (should be ziplist): ").strip
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_ORG_TOKEN, organization, :global)
+    end
+
+    repo = GitPivotalTrackerIntegration::Util::Git.get_config GITHUB_API_REPO_TOKEN
+    if (repo.empty?)
+      repo = ask("Github repo? (should be ziplist): ").strip
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_REPO_TOKEN, repo, :global)
+
+    end
+
+    ::Github.new(:oauth_token => token, :org => org, :repo => repo)
   end
 
   # Returns the user's Pivotal Tracker API token.  If this token has not been
@@ -132,5 +145,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
   KEY_STORY_ID = 'pivotal-story-id'.freeze
 
   GITHUB_API_OAUTH_TOKEN = 'github.oauth'.freeze
+  GITHUB_API_REPO_TOKEN = 'github.repo'.freeze
+  GITHUB_API_ORG_TOKEN = 'github.org'.freeze
 
 end
