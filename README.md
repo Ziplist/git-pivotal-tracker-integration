@@ -111,6 +111,12 @@ If it doesn't exist already, a `prepare-commit-msg` commit hook is added to your
 #
 ```
 
+### `git reminder`
+Displays the entire task that is currently being worked on
+
+### `git note`
+Lets you add a note to the current story
+
 ### `git finish`
 This command finishes a story pushing it up to origin.
 Then it sets up a PR to ziplist/ziplist.
