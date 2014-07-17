@@ -73,7 +73,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
 
     end
 
-    ::Github.new(:oauth_token => token, :org => org, :repo => repo)
+    ::Github.new(:oauth_token => token, :org => organization, :repo => repo)
   end
 
   # Returns the user's Pivotal Tracker API token.  If this token has not been
