@@ -31,6 +31,9 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
     no_complete = argument =~ /--no-complete/
     config = GitPivotalTrackerIntegration::Command::Configuration.new
     branch_name = GitPivotalTrackerIntegration::Util::Git.branch_name
+
+    GitPivotalTrackerIntegration::Util::Git.verify_uncommitted_changes!
+
     GitPivotalTrackerIntegration::Util::Git.update_from_master
     GitPivotalTrackerIntegration::Util::Git.push branch_name
 

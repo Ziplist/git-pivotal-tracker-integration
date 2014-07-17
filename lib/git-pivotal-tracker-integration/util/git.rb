@@ -145,6 +145,19 @@ class GitPivotalTrackerIntegration::Util::Git
     repository_root
   end
 
+
+  def self.verify_uncommitted_changes!
+    result = `git diff --exit-code`
+    if $?.exitstatus != 0
+      abort "You have uncommitted changes!"
+    end
+    result = `git diff --staged --exit-code`
+
+    if $?.exitstatus != 0
+      abort "You have uncommitted staged changes!"
+    end
+  end
+
   # Sets a Git configuration value.  This value is set using the +git config+
   # command.  The scope of the set value can be controlled with the +scope+
   # parameter.
