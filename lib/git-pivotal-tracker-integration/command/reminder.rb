@@ -24,7 +24,7 @@ class GitPivotalTrackerIntegration::Command::Reminder < GitPivotalTrackerIntegra
 
   def run(filter)
     branch_name = GitPivotalTrackerIntegration::Util::Git.branch_name
-    piv_story = a.match(/([\d]+)\-/)[1]
+    piv_story = branch_name.match(/([\d]+)\-/)[1]
     if (piv_story)
       story = GitPivotalTrackerIntegration::Util::Story.select_story @project, piv_story
       GitPivotalTrackerIntegration::Util::Story.pretty_print story
