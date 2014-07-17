@@ -45,9 +45,10 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
       title: "Fixing #{branch_name}"
     )
 
+    finish_on_tracker
+
     GitPivotalTrackerIntegration::Util::Shell.exec "git checkout #{config.base_branch}"
     GitPivotalTrackerIntegration::Util::Shell.exec "git pull #{config.base_remote} #{config.base_branch}"
-    finish_on_tracker
   end
 
   private
