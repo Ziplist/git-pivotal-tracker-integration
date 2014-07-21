@@ -104,6 +104,10 @@ class GitPivotalTrackerIntegration::Util::Git
     end
   end
 
+  def self.clear_config_from_branch
+      GitPivotalTrackerIntegration::Util::Shell.exec("git config --unset-all branch.#{branch_name}.#{key}", false).strip
+  end
+
   def self.update_from_master
     branch = get_config KEY_ROOT_BRANCH, :branch
     remote = get_config KEY_ROOT_REMOTE, :branch
