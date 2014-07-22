@@ -45,7 +45,16 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
       head: "#{config.github_username}:#{branch_name}",
       title: "Fixing #{branch_name}"
     )
+require 'pry'
+    binding.pry
 
+    # Add a comment on the PR linking to the story:
+    pr.comments.create :body => "Pivotal Task: https://www.pivotaltracker.com/story/show/#{piv_id}",
+      :user => config.github_username
+
+    # Add a comment in the pivotal task linking to the PR:
+    piv_story = branch_name.match(/([\d]+)\-/)[1]
+    story = GitPivotalTrackerIntegration::Util::Story.add_note @project, piv_story, "Pull Request @ " +
     finish_on_tracker
 
     GitPivotalTrackerIntegration::Util::Shell.exec "git checkout #{config.base_branch}"
@@ -57,7 +66,7 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
   def finish_on_tracker
     branch_name = GitPivotalTrackerIntegration::Util::Git.branch_name
     piv_story = branch_name.match(/([\d]+)\-/)[1]
-    story = GitPivotalTrackerIntegration::Util::Story.add_note @project, piv_story, "Completed and pushed to GitHub"
+    story = GitPivotalTrackerIntegration::Util::Story.select_story @project, piv_story
 
     print 'Finishing story on Pivotal Tracker... '
     story.update(
