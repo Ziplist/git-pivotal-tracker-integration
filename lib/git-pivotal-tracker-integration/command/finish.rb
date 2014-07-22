@@ -47,7 +47,7 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
       base: ask("What branch should this PR go to (preview / master /?):").strip,
       head: "#{config.github_username}:#{branch_name}",
       title: "Fixing #{branch_name}",
-      body: "###{story.name}\n\n#{story.description}\n\n\nPivotal Task: #{story.url}"
+      body: "# #{story.name}\n\n#{story.description}\n\n\n## Pivotal Task: #{story.url}"
     )
 
     # Add a comment in the pivotal task linking to the PR:
