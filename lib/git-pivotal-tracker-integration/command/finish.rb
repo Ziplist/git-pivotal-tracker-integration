@@ -38,23 +38,21 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
     GitPivotalTrackerIntegration::Util::Git.update_from_master
     GitPivotalTrackerIntegration::Util::Git.push branch_name
 
+    piv_story = branch_name.match(/([\d]+)\-/)[1]
+    story = GitPivotalTrackerIntegration::Util::Story.select_story @project, piv_story
+
     github = config.github
 
     pr = github.pull_requests.create(
       base: ask("What branch should this PR go to (preview / master /?):").strip,
       head: "#{config.github_username}:#{branch_name}",
-      title: "Fixing #{branch_name}"
+      title: "Fixing #{branch_name}",
+      body: "###{story.name}\n\n#{story.description}\n\n\nPivotal Task: #{story.url}"
     )
-require 'pry'
-    binding.pry
-
-    # Add a comment on the PR linking to the story:
-    pr.comments.create :body => "Pivotal Task: https://www.pivotaltracker.com/story/show/#{piv_id}",
-      :user => config.github_username
 
     # Add a comment in the pivotal task linking to the PR:
-    piv_story = branch_name.match(/([\d]+)\-/)[1]
-    story = GitPivotalTrackerIntegration::Util::Story.add_note @project, piv_story, "Pull Request @ " +
+    story = GitPivotalTrackerIntegration::Util::Story.add_note @project, piv_story, "Pull Request @ " + pr.response.body.html_url
+
     finish_on_tracker
 
     GitPivotalTrackerIntegration::Util::Shell.exec "git checkout #{config.base_branch}"
