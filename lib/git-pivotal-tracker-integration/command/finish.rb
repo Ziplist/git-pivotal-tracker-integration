@@ -44,6 +44,8 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
     github = config.github
 
     pr = github.pull_requests.create(
+      user: 'ziplist',
+      repo: 'ziplist',
       base: ask("What branch should this PR go to (preview / master /?):").strip,
       head: "#{config.github_username}:#{branch_name}",
       title: "Fixing #{branch_name}",
