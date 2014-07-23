@@ -55,7 +55,7 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
     # Add a comment in the pivotal task linking to the PR:
     story = GitPivotalTrackerIntegration::Util::Story.add_note @project, piv_story, "Pull Request @ " + pr.response.body.html_url
 
-    finish_on_tracker
+    #finish_on_tracker
 
     GitPivotalTrackerIntegration::Util::Shell.exec "git checkout #{config.base_branch}"
     GitPivotalTrackerIntegration::Util::Shell.exec "git pull #{config.base_remote} #{config.base_branch}"
