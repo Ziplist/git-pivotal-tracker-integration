@@ -44,18 +44,13 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
     github = config.github
 
     pr = github.pull_requests.create(
-      user: 'ziplist',
-      repo: 'ziplist',
-      base: ask("What branch should this PR go to (preview / master /?):").strip,
+      user: github.user,
+      repo: github.repo,
+      base: config.base_branch,
       head: "#{config.github_username}:#{branch_name}",
       title: "Fixing #{branch_name}",
       body: "# #{story.name}\n\n#{story.description}\n\n\n## Pivotal Task: #{story.url}"
     )
-
-    # Add a comment in the pivotal task linking to the PR:
-    story = GitPivotalTrackerIntegration::Util::Story.add_note @project, piv_story, "Pull Request @ " + pr.response.body.html_url
-
-    #finish_on_tracker
 
     GitPivotalTrackerIntegration::Util::Shell.exec "git checkout #{config.base_branch}"
     GitPivotalTrackerIntegration::Util::Shell.exec "git pull #{config.base_remote} #{config.base_branch}"
