@@ -27,7 +27,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
 
     if (branch.empty?)
       branch = ask("What remote should I pull from to start a new branch? ")
-      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.main-remote", branch, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.main-remote", branch, :local)
     end
     branch
   end
@@ -37,7 +37,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
 
     if (branch.empty?)
       branch = ask("What branch should I base the new branches off of? ")
-      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.main-branch", branch, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.main-branch", branch, :local)
     end
     branch
   end
@@ -47,7 +47,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
 
     if (remote.empty?)
       remote = ask("What remote should I push your topic branches to? ")
-      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.personal-remote", remote, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config("pivotal.personal-remote", remote, :local)
     end
     remote
   end
@@ -57,25 +57,25 @@ class GitPivotalTrackerIntegration::Command::Configuration
 
     if (token.empty?)
       token = ask("Github OAuth Token (help.github.com/articles/creating-an-access-token-for-command-line-use): ").strip
-      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_OAUTH_TOKEN, token, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_OAUTH_TOKEN, token, :local)
     end
 
     organization = GitPivotalTrackerIntegration::Util::Git.get_config GITHUB_API_ORG_TOKEN
     if (organization.empty?)
       organization = ask("Github organization? (should be ziplist): ").strip
-      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_ORG_TOKEN, organization, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_ORG_TOKEN, organization, :local)
     end
 
     repo = GitPivotalTrackerIntegration::Util::Git.get_config GITHUB_API_REPO_TOKEN
     if (repo.empty?)
       repo = ask("Github repo? (should be ziplist): ").strip
-      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_REPO_TOKEN, repo, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_REPO_TOKEN, repo, :local)
     end
 
     user = GitPivotalTrackerIntegration::Util::Git.get_config GITHUB_API_USER_TOKEN
     if (user.empty?)
       user = ask("Github user? (should be ziplist): ").strip
-      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_USER_TOKEN, user, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_USER_TOKEN, user, :local)
     end
 
     ::Github.new(:oauth_token => token, :org => organization, :repo => repo, :user => user)
@@ -86,14 +86,14 @@ class GitPivotalTrackerIntegration::Command::Configuration
 
     if (uname.empty?)
       uname = ask("Your Github username (same remote as origin): ").strip
-      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_USERNAME_TOKEN, uname, :global)
+      GitPivotalTrackerIntegration::Util::Git.set_config(GITHUB_API_USERNAME_TOKEN, uname, :local)
     end
     uname
   end
 
   # Returns the user's Pivotal Tracker API token.  If this token has not been
   # configured, prompts the user for the value.  The value is checked for in
-  # the _inherited_ Git configuration, but is stored in the _global_ Git
+  # the _inherited_ Git configuration, but is stored in the _local_ Git
   # configuration so that it can be used across multiple repositories.
   #
   # @return [String] The user's Pivotal Tracker API token
@@ -102,7 +102,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
 
     if api_token.empty?
       api_token = ask('Pivotal API Token (found at https://www.pivotaltracker.com/profile): ').strip
-      GitPivotalTrackerIntegration::Util::Git.set_config KEY_API_TOKEN, api_token, :global
+      GitPivotalTrackerIntegration::Util::Git.set_config KEY_API_TOKEN, api_token, :local
       puts
     end
 
@@ -153,16 +153,16 @@ class GitPivotalTrackerIntegration::Command::Configuration
 
   private
 
-  KEY_API_TOKEN = 'pivotal.api-token'.freeze
+  KEY_API_TOKEN = 'workflow.pivotal.api-token'.freeze
 
-  KEY_PROJECT_ID = 'pivotal.project-id'.freeze
+  KEY_PROJECT_ID = 'workflow.pivotal.project-id'.freeze
 
-  KEY_STORY_ID = 'pivotal-story-id'.freeze
+  KEY_STORY_ID = 'workflow.pivotal-story-id'.freeze
 
-  GITHUB_API_OAUTH_TOKEN = 'github.oauth'.freeze
-  GITHUB_API_REPO_TOKEN = 'github.repo'.freeze
-  GITHUB_API_ORG_TOKEN = 'github.org'.freeze
-  GITHUB_API_USER_TOKEN = 'github.user'.freeze
-  GITHUB_API_USERNAME_TOKEN = 'github.username'.freeze
+  GITHUB_API_OAUTH_TOKEN = 'workflow.github.oauth'.freeze
+  GITHUB_API_REPO_TOKEN = 'workflow.github.repo'.freeze
+  GITHUB_API_ORG_TOKEN = 'workflow.github.org'.freeze
+  GITHUB_API_USER_TOKEN = 'workflow.github.user'.freeze
+  GITHUB_API_USERNAME_TOKEN = 'workflow.github.username'.freeze
 
 end
