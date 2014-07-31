@@ -134,6 +134,18 @@ class GitPivotalTrackerIntegration::Command::Configuration
     project_id
   end
 
+  def pivotal_full_name
+    full_name = GitPivotalTrackerIntegration::Util::Git.get_config KEY_PIVOTAL_NAME, :local
+
+    if full_name.empty?
+      api_token = ask('Pivotal Full Name (found at https://www.pivotaltracker.com/profile): ').strip
+      GitPivotalTrackerIntegration::Util::Git.set_config KEY_PIVOTAL_NAME, full_name, :local
+      puts
+    end
+
+    full_name
+  end
+
   # Returns the story associated with the current development branch
   #
   # @param [PivotalTracker::Project] project the project the story belongs to
@@ -156,6 +168,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
   KEY_API_TOKEN = 'workflow.pivotal.api-token'.freeze
 
   KEY_PROJECT_ID = 'workflow.pivotal.project-id'.freeze
+  KEY_PIVOTAL_NAME = 'workflow.pivotal.full-namel'.freeze
 
   KEY_STORY_ID = 'workflow.pivotal-story-id'.freeze
 

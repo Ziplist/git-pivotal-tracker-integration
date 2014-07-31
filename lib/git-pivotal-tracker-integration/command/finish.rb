@@ -55,19 +55,4 @@ class GitPivotalTrackerIntegration::Command::Finish < GitPivotalTrackerIntegrati
     GitPivotalTrackerIntegration::Util::Shell.exec "git checkout #{config.base_branch}"
     GitPivotalTrackerIntegration::Util::Shell.exec "git pull #{config.base_remote} #{config.base_branch}"
   end
-
-  private
-
-  def finish_on_tracker
-    branch_name = GitPivotalTrackerIntegration::Util::Git.branch_name
-    piv_story = branch_name.match(/([\d]+)\-/)[1]
-    story = GitPivotalTrackerIntegration::Util::Story.select_story @project, piv_story
-
-    print 'Finishing story on Pivotal Tracker... '
-    story.update(
-      :current_state => 'finished',
-      :owned_by => GitPivotalTrackerIntegration::Util::Git.get_config('user.name')
-    )
-    puts 'OK'
-  end
 end
