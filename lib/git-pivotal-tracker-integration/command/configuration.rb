@@ -135,10 +135,10 @@ class GitPivotalTrackerIntegration::Command::Configuration
   end
 
   def pivotal_full_name
-    full_name = GitPivotalTrackerIntegration::Util::Git.get_config KEY_PIVOTAL_NAME
+    full_name = GitPivotalTrackerIntegration::Util::Git.get_config KEY_PIVOTAL_NAME, :inherited
 
     if full_name.empty?
-      api_token = ask('Pivotal Full Name (found at https://www.pivotaltracker.com/profile): ').strip
+      full_name = ask('Pivotal Full Name (found at https://www.pivotaltracker.com/profile): ').strip
       GitPivotalTrackerIntegration::Util::Git.set_config KEY_PIVOTAL_NAME, full_name, :local
       puts
     end
@@ -168,7 +168,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
   KEY_API_TOKEN = 'workflow.pivotal.api-token'.freeze
 
   KEY_PROJECT_ID = 'workflow.pivotal.project-id'.freeze
-  KEY_PIVOTAL_NAME = 'workflow.pivotal.full-namel'.freeze
+  KEY_PIVOTAL_NAME = 'workflow.pivotal.full-name'.freeze
 
   KEY_STORY_ID = 'workflow.pivotal-story-id'.freeze
 
