@@ -135,7 +135,7 @@ class GitPivotalTrackerIntegration::Command::Configuration
   end
 
   def pivotal_full_name
-    full_name = GitPivotalTrackerIntegration::Util::Git.get_config KEY_PIVOTAL_NAME, :local
+    full_name = GitPivotalTrackerIntegration::Util::Git.get_config KEY_PIVOTAL_NAME
 
     if full_name.empty?
       api_token = ask('Pivotal Full Name (found at https://www.pivotaltracker.com/profile): ').strip
