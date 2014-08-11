@@ -38,6 +38,10 @@ class GitPivotalTrackerIntegration::Command::Start < GitPivotalTrackerIntegratio
 
     GitPivotalTrackerIntegration::Util::Story.pretty_print story
 
+    if (!story_is_startable?(story))
+      abort "Story is not in a startable state"
+    end
+
     development_branch_name = development_branch_name story
 
     # Checkout {remote} / {master}
@@ -57,6 +61,11 @@ class GitPivotalTrackerIntegration::Command::Start < GitPivotalTrackerIntegratio
     branch_name = "#{story.id}-" + ask("Enter branch name (#{story.id}-<branch-name>): ")
     puts
     branch_name
+  end
+
+  def story_is_startable?(story)
+    # -1 means unestimated
+    story.estimate != -1
   end
 
   def start_on_tracker(story)
